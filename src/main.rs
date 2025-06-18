@@ -7,10 +7,12 @@ fn main() {
 }
 
 #[component]
-fn App() -> Element {
+fn Title() -> Element {
     rsx! {
-        Title {}
-        Panel {}
+        div {
+            id: "title",
+            h1 { "HotDog! 🌭" }
+        }
     }
 }
 
@@ -28,11 +30,9 @@ fn Panel() -> Element {
 }
 
 #[component]
-fn Title() -> Element {
+fn App() -> Element {
     rsx! {
-        div {
-            id: "title",
-            h1 { "HotDog! 🌭" }
-        }
+        Title {}
+        Panel {}
     }
 }
