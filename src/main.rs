@@ -10,18 +10,16 @@ fn main() {
 fn App() -> Element {
     rsx! {
         Title {}
-        DogView {}
+        Panel {}
     }
 }
 
 #[component]
-fn DogView() -> Element {
+fn Panel() -> Element {
     rsx! {
-        div { id: "dogview",
-            img { src: "https://images.dog.ceo/breeds/pitbull/dog-3981540_1280.jpg" }
-        }
         div { id: "buttons",
             button {
+                onclick: move |event| tracing::debug!{"Clicked skip button"},
                 id: "skip", "skip"
             }
             button { onclick: move |event| tracing::debug!{"Clicked Event {event:?}"}, id: "save", "save!" }
