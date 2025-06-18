@@ -6,8 +6,6 @@ fn main() {
     dioxus::launch(App);
 }
 
-
-
 #[component]
 fn App() -> Element {
     rsx! {
@@ -23,10 +21,10 @@ fn DogView() -> Element {
             img { src: "https://images.dog.ceo/breeds/pitbull/dog-3981540_1280.jpg" }
         }
         div { id: "buttons",
-            button { 
-                id: "skip", "skip" 
+            button {
+                id: "skip", "skip"
             }
-            button { id: "save", "save!" }
+            button { onclick: move |event| tracing::debug!{"Clicked Event {event:?}"}, id: "save", "save!" }
         }
     }
 }
@@ -34,7 +32,7 @@ fn DogView() -> Element {
 #[component]
 fn Title() -> Element {
     rsx! {
-        div { 
+        div {
             id: "title",
             h1 { "HotDog! 🌭" }
         }
