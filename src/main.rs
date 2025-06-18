@@ -1,15 +1,24 @@
 use dioxus::prelude::*;
 
+static ICON: Asset = asset!("/assets/favicon.ico");
+
 fn main() {
     dioxus::launch(App);
 }
 
+
+
 #[component]
 fn App() -> Element {
     rsx! {
-        div { id: "title",
-            h1 { "HotDog! 🌭" }
-        }
+        Title {}
+        DogView {}
+    }
+}
+
+#[component]
+fn DogView() -> Element {
+    rsx! {
         div { id: "dogview",
             img { src: "https://images.dog.ceo/breeds/pitbull/dog-3981540_1280.jpg" }
         }
@@ -18,6 +27,16 @@ fn App() -> Element {
                 id: "skip", "skip" 
             }
             button { id: "save", "save!" }
+        }
+    }
+}
+
+#[component]
+fn Title() -> Element {
+    rsx! {
+        div { 
+            id: "title",
+            h1 { "HotDog! 🌭" }
         }
     }
 }
