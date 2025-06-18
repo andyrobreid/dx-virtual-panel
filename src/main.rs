@@ -19,7 +19,7 @@ fn Panel() -> Element {
     rsx! {
         div { id: "buttons",
             button {
-                onclick: move |event| tracing::debug!{"Clicked skip button"},
+                onclick: move |event| tracing::debug!{"Clicked skip button with {event:?}"},
                 id: "skip", "skip"
             }
             button { onclick: move |event| tracing::debug!{"Clicked Event {event:?}"}, id: "save", "save!" }
