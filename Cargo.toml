@@ -1,5 +1,5 @@
 [package]
-name = "hot_dog"
+name = "Dioxus-start"
 version = "0.1.0"
 authors = ["andyrobreid <andyrobreid@gmail.com>"]
 edition = "2021"
