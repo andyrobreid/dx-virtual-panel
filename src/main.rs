@@ -1,7 +1,5 @@
 use dioxus::prelude::*;
 
-static ICON: Asset = asset!("/assets/favicon.ico");
-
 fn main() {
     dioxus::launch(App);
 }
