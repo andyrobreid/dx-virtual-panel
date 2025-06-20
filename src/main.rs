@@ -1,7 +1,9 @@
 use dioxus::prelude::*;
 
-fn main() {
-    dioxus::launch(App);
+#[derive(Props, PartialEq, Clone)]
+struct SignalProps {
+    name: String,
+    tooltip: String,
 }
 
 #[component]
@@ -15,14 +17,26 @@ fn Title() -> Element {
 }
 
 #[component]
+fn DigitalSignal(props: SignalProps) -> Element {
+    rsx!(
+        button { title: "{props.tooltip}" , "{props.name}" }
+
+    )
+}
+
+#[component]
 fn Panel() -> Element {
     rsx! {
         div { id: "buttons",
             button {
                 onclick: move |event| tracing::debug!{"Clicked skip button with {event:?}"},
                 id: "skip", "skip"
+            },
+            button { onclick: move |event| tracing::debug!{"Clicked Event {event:?}"}, id: "save", "save!" },
+            DigitalSignal{
+                name: "TEST",
+                tooltip: "this is a tooltip"
             }
-            button { onclick: move |event| tracing::debug!{"Clicked Event {event:?}"}, id: "save", "save!" }
         }
     }
 }
@@ -33,4 +47,8 @@ fn App() -> Element {
         Title {}
         Panel {}
     }
+}
+
+fn main() {
+    dioxus::launch(App);
 }
