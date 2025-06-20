@@ -68,7 +68,7 @@ fn Title() -> Element {
     rsx! {
         div {
             id: "title",
-            h1 { "HotDog! 🌭" }
+            h1 { "Virtual-Panel" }
         }
     }
 }
