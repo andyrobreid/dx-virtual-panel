@@ -53,6 +53,13 @@ fn ConfigureState() -> Result<Vec<SignalKind>, &'static str> {
             },
             value: 100,
         }),
+        SignalKind::Analog(AnalogSignal {
+            base: SignalProps {
+                name: String::from("Ana Input 1"),
+                tooltip: String::from("This is a Digital Input"),
+            },
+            value: 300,
+        }),
     ])
 }
 
@@ -77,7 +84,7 @@ fn DigitalSignal(props: DigitalSignal) -> Element {
 fn AnalogSignal(props: AnalogSignal) -> Element {
     //TODO Handle scroll as an input to increase and decrease value live
     rsx!(
-        input { title: "{props.base.tooltip}", type: "number", "{props.base.name}" }
+        input { title: "{props.base.tooltip}", type: "number", placeholder: "{props.base.name}" }
     )
 }
 
