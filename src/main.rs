@@ -29,7 +29,7 @@ struct State {
     signals: Vec<SignalKind>,
 }
 
-fn ConfigureState() -> Result<Vec<SignalKind>, &'static str> {
+fn configure_state() -> Result<Vec<SignalKind>, &'static str> {
     //TODO Get configuration of state from a config yaml file
     Ok(vec![
         SignalKind::Digital(DigitalSignal {
@@ -123,7 +123,7 @@ fn Panel() -> Element {
 #[component]
 fn App() -> Element {
     use_context_provider(|| State {
-        signals: ConfigureState().unwrap(),
+        signals: configure_state().unwrap(),
     });
 
     rsx! {
