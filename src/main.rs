@@ -76,7 +76,25 @@ fn Title() -> Element {
 #[component]
 fn DigitalSignal(props: DigitalSignal) -> Element {
     rsx!(
-        button { title: "{props.base.tooltip}" , "{props.base.name}" }
+        button {
+            title: "{props.base.tooltip}" ,
+            onclick: move |_| {
+                tracing::info!("Clicked Button {:?}", props.base.name);
+                if let Some(item) = consume_context::<State>().signals.iter_mut().find(|s| match s {
+                    SignalKind::Digital(dig) => *dig.base.name == "Dig Input 1".to_string(),
+                    _ => false
+                }) {
+                    match item {
+                        SignalKind::Digital(dig) => {
+                            dig.value = !dig.value;
+                            tracing::info!("Button {:?} has value of {1}", props.base.name, props.value);
+                        },
+                        _ => ()
+                    }
+                }
+            }
+             ,
+             "{props.base.name}" }
     )
 }
 
