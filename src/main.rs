@@ -7,60 +7,60 @@ struct SignalProps {
 }
 
 #[derive(Props, PartialEq, Clone)]
-struct DigitalSignal {
+struct DigitalSignalData {
     base: SignalProps,
     value: bool,
 }
 
 #[derive(Props, PartialEq, Clone)]
-struct AnalogSignal {
+struct AnalogSignalData {
     base: SignalProps,
     value: u32,
 }
 
 #[derive(Clone)]
 enum SignalKind {
-    Digital(DigitalSignal),
-    Analog(AnalogSignal),
+    Digital(DigitalSignalData),
+    Analog(AnalogSignalData),
 }
 
 #[derive(Clone)]
 struct State {
-    signals: Vec<SignalKind>,
+    signals: Signal<Vec<SignalKind>>,
 }
 
-fn configure_state() -> Result<Vec<SignalKind>, &'static str> {
+fn configure_state() -> Vec<SignalKind> {
     //TODO Get configuration of state from a config yaml file
-    Ok(vec![
-        SignalKind::Digital(DigitalSignal {
+    vec![
+        SignalKind::Digital(DigitalSignalData {
             base: SignalProps {
                 name: String::from("Dig Input 1"),
                 tooltip: String::from("This is a Digital Input"),
             },
             value: true,
         }),
-        SignalKind::Digital(DigitalSignal {
+        SignalKind::Digital(DigitalSignalData {
             base: SignalProps {
                 name: String::from("Dig Input 2"),
                 tooltip: String::from("This is a Digital Input"),
             },
             value: false,
         }),
-        SignalKind::Analog(AnalogSignal {
+        SignalKind::Analog(AnalogSignalData {
             base: SignalProps {
                 name: String::from("Ana Input 1"),
                 tooltip: String::from("This is a Digital Input"),
             },
             value: 100,
         }),
-        SignalKind::Analog(AnalogSignal {
+        SignalKind::Analog(AnalogSignalData {
             base: SignalProps {
                 name: String::from("Ana Input 1"),
                 tooltip: String::from("This is a Digital Input"),
             },
             value: 300,
         }),
-    ])
+    ]
 }
 
 #[component]
@@ -74,23 +74,19 @@ fn Title() -> Element {
 }
 
 #[component]
-fn DigitalSignal(props: DigitalSignal) -> Element {
+fn DigitalSignal(props: DigitalSignalData) -> Element {
+    let mut state = use_context::<State>();
     rsx!(
         button {
             title: "{props.base.tooltip}" ,
             onclick: move |_| {
-                tracing::info!("Clicked Button {:?}", props.base.name);
-                if let Some(item) = consume_context::<State>().signals.iter_mut().find(|s| match s {
-                    SignalKind::Digital(dig) => *dig.base.name == "Dig Input 1".to_string(),
+                let mut signals = state.signals.write();
+                if let Some(SignalKind::Digital(dig)) = signals.iter_mut().find(|s| match s {
+                    SignalKind::Digital(dig) => dig.base.name == props.base.name,
                     _ => false
                 }) {
-                    match item {
-                        SignalKind::Digital(dig) => {
-                            dig.value = !dig.value;
-                            tracing::info!("Button {:?} has value of {1}", props.base.name, props.value);
-                        },
-                        _ => ()
-                    }
+                    dig.value = !dig.value;
+                    tracing::info!("Button {:?} has value of {1}", props.base.name, props.value);
                 }
             }
              ,
@@ -99,17 +95,18 @@ fn DigitalSignal(props: DigitalSignal) -> Element {
 }
 
 #[component]
-fn AnalogSignal(props: AnalogSignal) -> Element {
+fn AnalogSignal(props: AnalogSignalData) -> Element {
     //TODO Handle scroll as an input to increase and decrease value live
     rsx!(
         input { title: "{props.base.tooltip}", type: "number", placeholder: "{props.base.name}" }
     )
 }
 
-#[component]
+#[component]    
 fn Panel() -> Element {
-    let mut state = use_context::<State>();
-    let signals_rendered = state.signals.iter().map(|sig| match sig {
+    let state = use_context::<State>();
+    let signals_ref = state.signals.read();
+    let signals_rendered = signals_ref.iter().map(|sig| match sig {
         SignalKind::Digital(dig) => {
             rsx!(DigitalSignal {
                 base: dig.base.clone(),
@@ -133,8 +130,9 @@ fn Panel() -> Element {
 
 #[component]
 fn App() -> Element {
+    let signals = use_signal(|| configure_state());
     use_context_provider(|| State {
-        signals: configure_state().unwrap(),
+        signals,
     });
 
     rsx! {
