@@ -55,7 +55,7 @@ fn configure_state() -> Vec<SignalKind> {
         }),
         SignalKind::Analog(AnalogSignalData {
             base: SignalProps {
-                name: String::from("Ana Input 2"),
+                name: String::from("Ana Input 2 "),
                 tooltip: String::from("This is a Digital Input"),
             },
             value: 300,
@@ -97,6 +97,7 @@ fn DigitalSignal(props: DigitalSignalData) -> Element {
 #[component]
 fn AnalogSignal(props: AnalogSignalData) -> Element {
     let mut state = use_context::<State>();
+    //TODO handle on input with enter key, local state only modify global state on enter
     //TODO Handle scroll as an input to increase and decrease value live
     rsx!(
         input {
@@ -133,6 +134,8 @@ fn Panel() -> Element {
             })
         }
     });
+
+    //TODO have means to show the current global state
     rsx! {
         div {
             id: "inputs",
