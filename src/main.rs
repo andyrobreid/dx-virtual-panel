@@ -55,7 +55,7 @@ fn configure_state() -> Vec<SignalKind> {
         }),
         SignalKind::Analog(AnalogSignalData {
             base: SignalProps {
-                name: String::from("Ana Input 1"),
+                name: String::from("Ana Input 2"),
                 tooltip: String::from("This is a Digital Input"),
             },
             value: 300,
@@ -96,13 +96,26 @@ fn DigitalSignal(props: DigitalSignalData) -> Element {
 
 #[component]
 fn AnalogSignal(props: AnalogSignalData) -> Element {
+    let mut state = use_context::<State>();
     //TODO Handle scroll as an input to increase and decrease value live
     rsx!(
-        input { title: "{props.base.tooltip}", type: "number", placeholder: "{props.base.name}" }
+        input {
+            title: "{props.base.tooltip}", type: "number", placeholder: "{props.base.name}",
+            oninput: move |event| {
+                let mut signals = state.signals.write();
+                if let Some(SignalKind::Analog(ana)) = signals.iter_mut().find(|s| match s {
+                    SignalKind::Analog(ana) => ana.base.name == props.base.name,
+                    _ => false
+                }) {
+                    ana.value = event.value().parse::<u32>().unwrap();
+                    tracing::info!("Input {:?} has value of {1}", props.base.name, event.value().parse::<u32>().unwrap());
+                }
+            }
+        }
     )
 }
 
-#[component]    
+#[component]
 fn Panel() -> Element {
     let state = use_context::<State>();
     let signals_ref = state.signals.read();
@@ -131,9 +144,7 @@ fn Panel() -> Element {
 #[component]
 fn App() -> Element {
     let signals = use_signal(|| configure_state());
-    use_context_provider(|| State {
-        signals,
-    });
+    use_context_provider(|| State { signals });
 
     rsx! {
         Title {}
